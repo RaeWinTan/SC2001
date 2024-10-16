@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import datetime 
 
 #default to a minimizing PQ, (weight, vector name)
 class PriorityQueue(ABC):#it should be returning back a tuple 
@@ -79,6 +78,8 @@ class HeapPQ(PriorityQueue):
 class Solution(ABC):
     @abstractmethod
     def getDist(self,a,b): return (0,0)#dist and time 
+    @abstractmethod 
+    def getDist_bad(self, a,b): return (0,0)
     @abstractmethod
     def getSinks(self): return 0
     @abstractmethod
@@ -86,89 +87,7 @@ class Solution(ABC):
     @abstractmethod
     def getTotal(self): return 0#this includes all iterations
     
-class A(Solution):#assume it is a simple directed graph
-    def __init__(self,n,edges):
-        self.n = n 
-        self.hm = [[float("inf")]*n for _ in range(n)]
-        for a,b,w in edges:
-            self.hm[a][b] = w
-        self.sink_count = 0
-        self.swim_count = 0
-        self.loop_count = 0   
-    def getDist(self,a,b):
-        self.sink_count = 0
-        self.swim_count = 0
-        self.loop_count = 0
-        starttime = datetime.datetime.now()
-        dp = [float("inf")]*self.n
-        dp[a] = 0
-        pq = ArrayPQ()
-        self.swim_count+=pq.put((0,a)) 
-        while pq.size():
-            ((dist,node), skct) = pq.pop()
-            self.sink_count+=skct
-            if node==b: break 
-            for adj in range(self.n):
-                self.loop_count+=1
-                if dist+self.hm[node][adj]>=dp[adj]:continue
-                dp[adj] = dist+self.hm[node][adj]
-                self.swim_count+=pq.put((dp[adj], adj))
-        rtn = dp[b]
-        endtime = datetime.datetime.now()
-        del dp
-        del pq
-        return (rtn, (endtime-starttime).total_seconds()*1000)
-    def getSinks(self):
-        return self.sink_count
-    def getSwims(self):
-        return self.swim_count 
-    def getTotal(self):
-        return self.loop_count+self.swim_count+self.sink_count+self.n
-    def __del__(self):
-        for r in self.hm: del r 
-        del self.hm
 
-class B(Solution):#assume it is a simple directed graph
-    def __init__(self,n,edges):
-        self.n = n 
-        self.hm = [[] for _ in range(n)]
-        for a,b,w in edges:
-            self.hm[a].append((b,w))
-        self.sink_count = 0 
-        self.swim_count = 0 
-    
-    def getDist(self,a,b):
-        self.sink_count = 0 
-        self.swim_count = 0 
-        self.loop_count = 0
-        starttime = datetime.datetime.now()
-        dp = [float("inf")]*self.n
-        dp[a] = 0
-        pq = HeapPQ()
-        self.swim_count+=pq.put((0,a))
-        while pq.size():
-            ((dist,node), skct) = pq.pop()
-            self.sink_count+=skct
-            if node==b: break 
-            for (adj,w) in self.hm[node]:
-                self.loop_count+=1
-                if dist+w>=dp[adj]:continue
-                dp[adj] = dist+w
-                self.swim_count+=pq.put((dp[adj], adj))
-        rtn = dp[b]
-        endtime = datetime.datetime.now()
-        del dp 
-        del pq
-        return (rtn, (endtime-starttime).total_seconds()*1000)
-    def getTotal(self):
-        return self.swim_count+self.sink_count+self.loop_count+self.n
-    def getSwims(self):
-        return self.swim_count
-    def getSinks(self):
-        return self.sink_count
-    def __del__(self):
-        for r in self.hm:del r 
-        del self.hm 
 
 
 
