@@ -85,7 +85,7 @@ class Solution(ABC):
     @abstractmethod
     def getSwims(self): return 0
     @abstractmethod
-    def getTotal(self): return 0#this includes all iterations
+    def getTotal(self): return 0#sinks+swims
     
 
 

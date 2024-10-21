@@ -39,7 +39,6 @@ def genWeirdGraph(sz):
         tmp = [(nodes[i],weights[i]) for i in range(len(weights))]+[(k+1, 1)]
         hm[k] = tmp 
         for b,w in tmp: rtn.append((k,b,w))
-        print(k, v)
     mat = [[float("inf")]*sz for _ in range(sz)]
     for a,b,w in rtn:
         mat[a][b] = w 
@@ -121,7 +120,15 @@ def qc(vstart,vend,vstep):
         timeEnd = datetime.datetime.now()
         print("QC: "+str(n)+":"+str(len(edges))+ " timetaken:"+str((timeEnd-timeStart).total_seconds()*1000))
 
+ss= genWeirdGraph(5)
+aObj = A(5,ss)
+for r in aObj.hm: print(r)
+bObj = B(5,ss)
+for r in bObj.hm:
+    print(r)
+"""
 start,stop,step = 100 ,500 ,50
 qab(start,stop,step)
 qc(start,stop,step)
 workbook.close()
+"""

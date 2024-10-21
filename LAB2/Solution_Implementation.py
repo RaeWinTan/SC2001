@@ -88,7 +88,7 @@ class B(Solution):#assume it is a simple directed graph
         while pq.size():
             ((dist,node), skct) = pq.pop()
             self.sink_count+=skct
-            if node==b: break# prunes out unnesary computations
+            if node==b: break
             for (adj,w) in self.hm[node]:
                 if dist+w>=dp[adj]:continue #prunes out unnessary computations
                 dp[adj] = dist+w
