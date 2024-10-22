@@ -55,12 +55,31 @@ def online_solution(C,weights, profits):
                 dp[i][w] = dp[i-1][w]
     return dp[n][W]
 
-tests = [(14, [4, 6, 8],[7, 6, 9]), (14, [5, 6, 8],[7, 6, 9])]
-for (C,weights,profits) in tests:
-    print("-"*10)
-    print(solution_topDown(C, weights, profits))
-    print(solution_bottom_up(C, weights, profits))
-    print(solution_bottom_up_space_efficient(C,weights,profits))
-    print(online_solution(C,weights, profits))
 
 
+from random import randint
+import xlsxwriter
+workbook = xlsxwriter.Workbook('test_data.xlsx', {'constant_memory':True})
+ws = workbook.add_worksheet("RESULTS")
+header=  ["weights", "profits", "Capacity", "topDown","bottom up", "bottom up (space efficient)", "Online solution", "isSame"]
+for i,e in enumerate(header): ws.write(0,i,e)
+row = 1 
+for sz in range(10, 101, 10): 
+    weights = [randint(30, 350) for _ in range(sz)]
+    profits = [randint(20,1000) for _ in range(sz)]
+    for C in [randint(30, 100), randint(100,200), randint(500, 1000)]:
+        a = solution_topDown(C,weights, profits)
+        b = solution_bottom_up_space_efficient(C,weights,profits)
+        c = solution_bottom_up_space_efficient(C,weights,profits)
+        d = online_solution(C,weights, profits)
+        ws.write(row, 0, ",".join(list(map(str,weights))) )
+        ws.write(row, 1, ",".join(list(map(str,profits))) )
+        ws.write(row, 2, str(C))
+        ws.write(row, 3, str(a))
+        ws.write(row, 4, str(b))
+        ws.write(row, 5, str(c))
+        ws.write(row, 6, str(d))
+        ws.write(row,7, str(len(set([a,b,c,d]))==1) )
+        row+=1
+
+workbook.close()
