@@ -20,6 +20,7 @@ def solution_topDown(C, weights, profits):
         return max(profits[i] + P(C-weights[i], i+1), P(C,i+1))
     return P(C,0)
 
+#time complexity : O(C*N), Space Complexity O(C*N)
 def solution_bottom_up(C,weights,profits):
     dp = [[0]*(len(weights) + 1) for _ in range(C+1)]
     for i in range(len(weights)-1, -1, -1):
@@ -28,8 +29,9 @@ def solution_bottom_up(C,weights,profits):
             else: dp[c][i] = max(profits[i] + dp[c-weights[i]][i+1], dp[c][i+1])
     return dp[C][0] 
 
+#time complexity : O(C*N), Space Complexity O(C)
 def solution_bottom_up_space_efficient(C,weights,profits):
-    dp = [0]*(C+1)
+    dp = [0]*(C+1)#O(C)
     for i in range(len(weights)-1, -1, -1):
         nxt = []
         for c in range(C+1):
