@@ -7,8 +7,7 @@ P(C,i) =
         return P(C,i+1)
     else:
         #take the maximum between taking the current object and not taking the current object 
-        return max(profits[i] + P(C-weights[i], i+1), P(C,i+1))
-        
+        return max(profits[i] + P(C-weights[i], i+1), P(C,i+1))   
 """
 from functools import cache
 #top down approach
@@ -58,7 +57,23 @@ def online_solution(C,weights, profits):
     return dp[n][W]
 
 
+#SOLUTION TO LAB PROBLEM
 
+#4a
+weights = [4,6,8]
+profits = [7,6,9]
+C= 14
+print("4(a)",solution_bottom_up_space_efficient(C,weights, profits))
+
+#4b 
+weights = [5,6,8]
+profits = [7,6,9]
+C= 14
+print("4(b)",solution_bottom_up_space_efficient(C,weights, profits))
+
+
+
+"""
 from random import randint
 import xlsxwriter
 workbook = xlsxwriter.Workbook('test_data.xlsx', {'constant_memory':True})
@@ -85,3 +100,4 @@ for sz in range(10, 101, 10):
         row+=1
 
 workbook.close()
+"""
