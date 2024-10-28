@@ -19,14 +19,28 @@ def solution_topDown(C, weights, profits):
         return max(profits[i] + P(C-weights[i], i+1), P(C,i+1))
     return P(C,0)
 
-#time complexity : O(C*N), Space Complexity O(C*N)
+#time complexity : O(C*N), Space Complexity O(C*N), with the hint
 def solution_bottom_up(C,weights,profits):
     dp = [[0]*(len(weights) + 1) for _ in range(C+1)]
+    hint = [[False]*(len(weights) + 1) for _ in range(C+1)]
     for i in range(len(weights)-1, -1, -1):
         for c in range(C+1):
-            if c<weights[i]: dp[c][i] = dp[c][i+1]
-            else: dp[c][i] = max(profits[i] + dp[c-weights[i]][i+1], dp[c][i+1])
-    return dp[C][0] 
+            if c<weights[i]: #dont take 
+                dp[c][i] = dp[c][i+1]
+                hint[c][i] = False
+            else: 
+                dp[c][i] = max(profits[i] + dp[c-weights[i]][i+1], dp[c][i+1])
+                if profits[i] + dp[c-weights[i]][i+1]> dp[c][i+1]: hint[c][i] = True #take it 
+                else: hint[c][i] = False # dont take 
+    takes = [] 
+    i = 0
+    c = C 
+    while i < len(weights):
+        if hint[c][i]:
+            takes.append(i)
+            c-=weights[i]
+        i+=1        
+    return dp[C][0], takes, sum(profits[i] for i in takes)
 
 #time complexity : O(C*N), Space Complexity O(C)
 def solution_bottom_up_space_efficient(C,weights,profits):
@@ -63,14 +77,17 @@ def online_solution(C,weights, profits):
 weights = [4,6,8]
 profits = [7,6,9]
 C= 14
-print("4(a)",solution_bottom_up_space_efficient(C,weights, profits))
-
+print("WEIGHTS:",weights,", PROFITS:",profits,", C:",C)
+print("4(a) Bottom up Space Efficient",solution_bottom_up_space_efficient(C,weights, profits))
+print("4(a) Bottom up with Hint",solution_bottom_up(C,weights, profits))
+print("---------------")
 #4b 
 weights = [5,6,8]
 profits = [7,6,9]
 C= 14
-print("4(b)",solution_bottom_up_space_efficient(C,weights, profits))
-
+print("WEIGHTS:",weights,", PROFITS:",profits,", C:",C)
+print("4(b) Bottom up Space Efficient",solution_bottom_up_space_efficient(C,weights, profits))
+print("4(b) Bottom up with Hint",solution_bottom_up(C,weights, profits))
 
 
 """
@@ -78,7 +95,7 @@ from random import randint
 import xlsxwriter
 workbook = xlsxwriter.Workbook('test_data.xlsx', {'constant_memory':True})
 ws = workbook.add_worksheet("RESULTS")
-header=  ["weights", "profits", "Capacity", "topDown","bottom up", "bottom up (space efficient)", "Online solution", "isSame"]
+header=  ["weights", "profits", "Capacity", "topDown","bottom up","Bottom up takes", "bottom up (space efficient)", "Online solution", "isSame","Takes"]
 for i,e in enumerate(header): ws.write(0,i,e)
 row = 1 
 for sz in range(10, 101, 10): 
@@ -86,7 +103,7 @@ for sz in range(10, 101, 10):
     profits = [randint(20,1000) for _ in range(sz)]
     for C in [randint(30, 100), randint(100,200), randint(500, 1000)]:
         a = solution_topDown(C,weights, profits)
-        b = solution_bottom_up_space_efficient(C,weights,profits)
+        b,takes,b1t = solution_bottom_up(C,weights,profits)
         c = solution_bottom_up_space_efficient(C,weights,profits)
         d = online_solution(C,weights, profits)
         ws.write(row, 0, ",".join(list(map(str,weights))) )
@@ -94,9 +111,11 @@ for sz in range(10, 101, 10):
         ws.write(row, 2, str(C))
         ws.write(row, 3, str(a))
         ws.write(row, 4, str(b))
-        ws.write(row, 5, str(c))
-        ws.write(row, 6, str(d))
-        ws.write(row,7, str(len(set([a,b,c,d]))==1) )
+        ws.write(row, 5, str(b1t))
+        ws.write(row, 6, str(c))
+        ws.write(row, 7, str(d))
+        ws.write(row,8, str(len(set([a,b,c,d,b1t]))==1) )
+        ws.write(row, 9, ",".join(map(str,takes)) )
         row+=1
 
 workbook.close()
