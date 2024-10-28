@@ -79,7 +79,7 @@ profits = [7,6,9]
 C= 14
 print("WEIGHTS:",weights,", PROFITS:",profits,", C:",C)
 print("4(a) Bottom up Space Efficient",solution_bottom_up_space_efficient(C,weights, profits))
-print("4(a) Bottom up with Hint",solution_bottom_up(C,weights, profits))
+print("4(a) Bottom up with Hint",solution_bottom_up(C,weights, profits)[0:2])
 print("---------------")
 #4b 
 weights = [5,6,8]
@@ -87,7 +87,7 @@ profits = [7,6,9]
 C= 14
 print("WEIGHTS:",weights,", PROFITS:",profits,", C:",C)
 print("4(b) Bottom up Space Efficient",solution_bottom_up_space_efficient(C,weights, profits))
-print("4(b) Bottom up with Hint",solution_bottom_up(C,weights, profits))
+print("4(b) Bottom up with Hint",solution_bottom_up(C,weights, profits)[0:2])
 
 
 """
