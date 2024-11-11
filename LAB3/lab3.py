@@ -1,14 +1,3 @@
-"""
-
-P(C,i) #C: capacity, #i: index of the object  
-P(C,i) = 
-    if i==len(profits): return 0
-    if C<weights[i]:
-        return P(C,i+1)
-    else:
-        #take the maximum between taking the current object and not taking the current object 
-        return max(profits[i] + P(C-weights[i], i+1), P(C,i+1))   
-"""
 from functools import cache
 #top down approach
 def solution_topDown(C, weights, profits):
@@ -22,7 +11,7 @@ def solution_topDown(C, weights, profits):
         return rtn         
     return P(C,0)
 
-#time complexity : O(C*N), Space Complexity O(C*N), with the hint
+#time complexity : O(C*N*(C//min(weights))), Space Complexity O(C*N), with the hint
 def solution_bottom_up(C,weights,profits):
     n = len(weights)
     dp = [[0 for _ in range(C+1)] for _ in range(n+1)] 
@@ -43,6 +32,7 @@ def solution_bottom_up(C,weights,profits):
         c-=weights[i]*hint[i][c]
     return (dp[0][C], rtn, sum(profits[i]*c for i,c in rtn))
 
+#time complexity : O(C*N*(C//min(weights))), Space Complexity O(C)
 def solution_bottom_up_space_optimised(C,weights,profits):
     n = len(weights)
     prev = [0 for _ in range(C+1)] 
@@ -79,7 +69,7 @@ print("4(b) Bottom up", sol[0])
 print("4 (b) Bottom up space efficient", solution_bottom_up_space_optimised(C,weights,profits))
 print(sol[1])
 
-
+"""
 from random import randint
 import xlsxwriter
 workbook = xlsxwriter.Workbook('test_data.xlsx', {'constant_memory':True})
@@ -106,3 +96,4 @@ for sz in range(1, 10):
         row+=1
 
 workbook.close()
+"""
